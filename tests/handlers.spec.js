@@ -1,5 +1,7 @@
 const chai = require('chai');
 const sinon = require('sinon');
+const proxyquire = require('proxyquire');
+
 const handlers = require('./../lib/handlers');
 const pokemons = require('./../data/pokemons');
 const favorites = require('./../data/favorites');
@@ -70,13 +72,14 @@ describe('Handlers', () => {
     it('should save the new pokemon into pokemons.json', () => {
       // Given
       const newPokemon = {
-        fakeField: 'fakeValue'
+        fakeField : 'fakeValue'
       };
       const request = {
-        payload: newPokemon
+        payload : newPokemon
       };
       const fakeReply = () => ({
-        code : () => {}
+        code : () => {
+        }
       });
 
       // When
@@ -99,10 +102,10 @@ describe('Handlers', () => {
     it('should save the new favorite place into favorites.json', () => {
       // Given
       const newFavorite = {
-        fakeField: 'fakeValue'
+        fakeField : 'fakeValue'
       };
       const request = {
-        payload: newFavorite
+        payload : newFavorite
       };
       const replySpy = () => ({
         code : () => sinon.spy()
@@ -113,6 +116,34 @@ describe('Handlers', () => {
 
       // Then
       expect(favorites.push).to.have.been.calledWith(newFavorite);
+    });
+  });
+
+  describe('.getFavorites()', () => {
+    let proxyquiredHandlers;
+    const fakeFavorites = [{
+      label : 'favorite1',
+      color : '#A9B8C7'
+    }, {
+      label : 'favorite2',
+      color : '#A9B8C7'
+    }];
+
+    before(() => {
+      proxyquiredHandlers = proxyquire('../lib/handlers.js', {
+        '../data/favorites' : fakeFavorites
+      });
+    });
+
+    it('should reply a list of favorites', () => {
+      // Given
+      const replySpy = sinon.spy();
+
+      // When
+      proxyquiredHandlers.getFavorites({}, replySpy);
+
+      // Then
+      expect(replySpy).to.have.been.calledWith(fakeFavorites);
     });
   });
 });

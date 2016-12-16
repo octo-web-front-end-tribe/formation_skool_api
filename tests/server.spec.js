@@ -139,6 +139,7 @@ describe('Server', () => {
     });
   });
 
+
   describe('POST /favorites', () => {
     it('should return 201', (done) => {
       const payload = {
@@ -147,6 +148,15 @@ describe('Server', () => {
       };
       server.inject({ method : 'post', url : '/favorites?api_key=roman', payload }, (res) => {
         expect(res.statusCode).to.equal(201);
+        done();
+      });
+    });
+  });
+
+  describe('GET /favorites', () => {
+    it('should return a list of pokemons', (done) => {
+      server.inject('/favorites?api_key=roman', (res) => {
+        expect(res.result).to.deep.equal(require('./../data/favorites'));
         done();
       });
     });
