@@ -2,6 +2,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 const handlers = require('./../lib/handlers');
 const pokemons = require('./../data/pokemons');
+const favorites = require('./../data/favorites');
 
 const expect = chai.expect;
 chai.use(require('sinon-chai'));
@@ -83,6 +84,35 @@ describe('Handlers', () => {
 
       // Then
       expect(pokemons.push).to.have.been.calledWith(newPokemon);
+    });
+  });
+
+  describe('.saveFavorite()', () => {
+    before(() => {
+      sinon.stub(favorites, 'push');
+    });
+
+    after(() => {
+      favorites.push.restore();
+    });
+
+    it('should save the new favorite place into favorites.json', () => {
+      // Given
+      const newFavorite = {
+        fakeField: 'fakeValue'
+      };
+      const request = {
+        payload: newFavorite
+      };
+      const replySpy = () => ({
+        code : () => sinon.spy()
+      });
+
+      // When
+      handlers.saveFavorite(request, replySpy);
+
+      // Then
+      expect(favorites.push).to.have.been.calledWith(newFavorite);
     });
   });
 });

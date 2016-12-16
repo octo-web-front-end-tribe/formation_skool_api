@@ -64,7 +64,7 @@ describe('Server', () => {
 
       it('should return a list of pokemons', (done) => {
         server.inject('/pokemons?api_key=anass', (res) => {
-          expect(res.result).to.deep.equal(require('./../data'));
+          expect(res.result).to.deep.equal(require('./../data/pokemons'));
           done();
         });
       });
@@ -73,7 +73,7 @@ describe('Server', () => {
     describe('when I provide a list of fields', () => {
       it('should return the appropriate fields', (done) => {
         server.inject('/pokemons?api_key=anass&fields=name', (res) => {
-          const pokemons = require('./../data');
+          const pokemons = require('./../data/pokemons');
           expect(res.result).to.eql(pokemons.map((pokemon) => {
             return {
               name : pokemon.name
@@ -135,6 +135,19 @@ describe('Server', () => {
             });
           });
         });
+      });
+    });
+  });
+
+  describe('POST /favorites', () => {
+    it('should return 201', (done) => {
+      const payload = {
+        label : 'toto',
+        color : '#123456'
+      };
+      server.inject({ method : 'post', url : '/favorites?api_key=roman', payload }, (res) => {
+        expect(res.statusCode).to.equal(201);
+        done();
       });
     });
   });
