@@ -139,7 +139,6 @@ describe('Server', () => {
     });
   });
 
-
   describe('POST /favorites', () => {
     it('should return 201', (done) => {
       const payload = {
@@ -149,6 +148,19 @@ describe('Server', () => {
       server.inject({ method : 'post', url : '/favorites?api_key=roman', payload }, (res) => {
         expect(res.statusCode).to.equal(201);
         done();
+      });
+    });
+
+    describe('When the color is invalid', () => {
+      it('should return 400', (done) => {
+        const payload = {
+          label : 'toto',
+          color : '#BLURP'
+        };
+        server.inject({ method : 'post', url : '/favorites?api_key=roman', payload }, (res) => {
+          expect(res.statusCode).to.equal(400);
+          done();
+        });
       });
     });
   });
