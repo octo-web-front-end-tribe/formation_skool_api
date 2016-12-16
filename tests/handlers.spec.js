@@ -1,6 +1,7 @@
 const chai = require('chai');
 const sinon = require('sinon');
 const handlers = require('./../lib/handlers');
+const pokemons = require('./../data/pokemons');
 
 const expect = chai.expect;
 chai.use(require('sinon-chai'));
@@ -29,7 +30,7 @@ describe('Handlers', () => {
       handlers.getAllPokemons({}, mySpy);
 
       // Then
-      expect(mySpy).to.have.been.calledWith(require('./../data'));
+      expect(mySpy).to.have.been.calledWith(require('./../data/pokemons'));
     });
 
     describe('when request has fields', () => {
@@ -53,6 +54,35 @@ describe('Handlers', () => {
         // Then
         expect(mySpy).to.have.been.calledWith(data);
       });
+    });
+  });
+
+  describe('.createPokemon()', () => {
+    before(() => {
+      sinon.stub(pokemons, 'push');
+    });
+
+    after(() => {
+      pokemons.push.restore();
+    });
+
+    it('should save the new pokemon into pokemons.json', () => {
+      // Given
+      const newPokemon = {
+        fakeField: 'fakeValue'
+      };
+      const request = {
+        payload: newPokemon
+      };
+      const fakeReply = () => ({
+        code : () => {}
+      });
+
+      // When
+      handlers.createPokemon(request, fakeReply);
+
+      // Then
+      expect(pokemons.push).to.have.been.calledWith(newPokemon);
     });
   });
 });
