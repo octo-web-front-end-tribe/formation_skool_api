@@ -143,7 +143,12 @@ describe('Server', () => {
     it('should return 201', (done) => {
       const payload = {
         label : 'toto',
-        color : '#123456'
+        color : '#123456',
+        address: '34 avenue de l\'Opéra',
+        coordinates: [
+          1.1235678,
+          1.87654321
+        ]
       };
       server.inject({ method : 'post', url : '/favorites?api_key=roman', payload }, (res) => {
         expect(res.statusCode).to.equal(201);
@@ -155,7 +160,12 @@ describe('Server', () => {
       it('should return 400', (done) => {
         const payload = {
           label : 'toto',
-          color : '#BLURP'
+          color : '#BLURP',
+          address: '34 avenue de l\'Opéra',
+          coordinates: [
+            1.1235678,
+            1.87654321
+          ]
         };
         server.inject({ method : 'post', url : '/favorites?api_key=roman', payload }, (res) => {
           expect(res.statusCode).to.equal(400);
